@@ -1,10 +1,13 @@
 #!/bin/bash
 
-u_flag='root'
-s_flag=''
-f_flag=''
-h_flag=''
-q_flag='false'
+user_flag='root'
+script_flag=''
+hosts_file_flag=''
+hosts_string_flag=''
+quiet_flag='false'
+
+quiet_cmd=''
+in_cmd=''
 
 print_usage() {
   printf "Executes a local script on the provided remote hosts.\n\n"
@@ -23,43 +26,42 @@ fi
 
 while getopts 'u:s:f:h:q' flag; do
   case "${flag}" in
-    u) u_flag="${OPTARG}" ;;
-    s) s_flag="${OPTARG}" ;;
-    f) f_flag="${OPTARG}" ;;
-    h) h_flag="${OPTARG}" ;;
-    q) q_flag='true' ;;
+    u) user_flag="${OPTARG}" ;;
+    s) script_flag="${OPTARG}" ;;
+    f) hosts_file_flag="${OPTARG}" ;;
+    h) hosts_string_flag="${OPTARG}" ;;
+    q) quiet_flag='true' ;;
     *) print_usage
        exit 1 ;;
   esac
 done
 
-if [ -z "$h_flag" ] &&  [ -z "$f_flag" ] ;
+if [ -z "$hosts_string_flag" ] &&  [ -z "$hosts_file_flag" ] ;
   then
     printf "No hosts specified.. Exiting.\n"
     exit 1
 fi
 
-if [ -z $s_flag ]
+if [ -z $script_flag ]
   then
     printf "No script specified.. Exiting.\n"
     exit 1
 fi
 
-in_cmd=''
-if [ -z "$h_flag" ]
+if [ -z "$hosts_string_flag" ]
   then
-  	in_cmd=$(cat $f_flag)
+  	in_cmd=$(cat $hosts_file_flag)
   else
-  	in_cmd="${h_flag}"
+  	in_cmd="${hosts_string_flag}"
 fi
 
-quiet_cmd=''
-if [ "$q_flag" == "true" ]
+
+if [ "$quiet_flag" == "true" ]
   then
   	quiet_cmd="> /dev/null 2>&1"
 fi
 
 for HOSTNAME in ${in_cmd} ; do
-	printf "Running script '${s_flag}' on host: ${HOSTNAME}\n"
-    ssh -o StrictHostKeyChecking=no -l ${u_flag} ${HOSTNAME} "bash -s" < ${s_flag} ${quiet_cmd}
+	printf "Running '${script_flag}' on host: ${HOSTNAME}\n"
+    ssh -o StrictHostKeyChecking=no -l ${user_flag} ${HOSTNAME} "bash -s" < ${script_flag} ${quiet_cmd}
 done
