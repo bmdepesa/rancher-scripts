@@ -2,7 +2,7 @@
 
 print_usage() {
   printf "Installs Rancher with the specified version\n"
-  printf "installRancherAIO <version>\n"
+  printf "installRancherAIO.sh <version>\n"
 }
 
 if [ $# -eq 0 ]

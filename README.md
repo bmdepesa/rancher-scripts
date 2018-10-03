@@ -25,3 +25,23 @@ With a file containing hosts:
 With a string of hosts:
 * ./runOnHosts.sh -h \<string containing hosts\> -s \<script to run\>
 * `./runOnHosts.sh -h "138.140.2.8 138.141.2.6" -s install_docker.sh`
+
+With a script that takes arguments:
+* ./runOnHosts.sh -h \<string containing hosts\> -s "\<script to run\> arg0 arg1"
+* ./runOnHosts.sh -h "138.10.2.8" -s "installRancherAIO.sh v2.0.8"
+
+### installRancherAIO.sh
+
+Installs Docker, and then Rancher with the specified Rancher server version.
+
+Takes the tag of the Rancher version as an argument.
+
+### installRancherNoDocker.sh
+
+Installs Rancher with the specified Rancher server version.
+
+Takes the tag of the Rancher version as an argument.
+
+### installDocker.sh
+
+Installs Docker on the host.
