@@ -69,7 +69,7 @@ args_string=''
 for index in "${!s_args[@]}"; do
   if [ $index -ne "0" ]
     then
-      args_string="${args_string}${s_args[index]} "
+      args_string="${args_string}\"${s_args[index]}\" "
   fi 
 done
 
@@ -77,5 +77,5 @@ printf "Script name: ${script_name}; s_args: ${args_string}\n"
 
 for HOSTNAME in ${in_cmd}; do
   printf "Running '${script_flag}' on host: ${HOSTNAME}\n"
-  ssh -o StrictHostKeyChecking=no -l ${user_flag} ${HOSTNAME} "bash -s" -- < "${script_name}" "${args_string}" ${quiet_cmd}
+  ssh -o StrictHostKeyChecking=no -l ${user_flag} ${HOSTNAME} "bash -s" -- < "${script_name}" ${args_string} ${quiet_cmd}
 done
