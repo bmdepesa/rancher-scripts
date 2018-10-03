@@ -42,7 +42,7 @@ if [ -z "$hosts_string_flag" ] &&  [ -z "$hosts_file_flag" ] ;
     exit 1
 fi
 
-if [ -z $script_flag ]
+if [ -z "${script_flag}" ]
   then
     printf "No script specified.. Exiting.\n"
     exit 1
@@ -61,7 +61,21 @@ if [ "$quiet_flag" == "true" ]
   	quiet_cmd="> /dev/null 2>&1"
 fi
 
-for HOSTNAME in ${in_cmd} ; do
-	printf "Running '${script_flag}' on host: ${HOSTNAME}\n"
-    ssh -o StrictHostKeyChecking=no -l ${user_flag} ${HOSTNAME} "bash -s" < ${script_flag} ${quiet_cmd}
+IFS=' ' read -r -a s_args <<< "${script_flag}"
+
+script_name=${s_args[0]}
+args_string=''
+
+for index in "${!s_args[@]}"; do
+  if [ $index -ne "0" ]
+    then
+      args_string="${args_string}${s_args[index]} "
+  fi 
+done
+
+printf "Script name: ${script_name}; s_args: ${args_string}\n"
+
+for HOSTNAME in ${in_cmd}; do
+  printf "Running '${script_flag}' on host: ${HOSTNAME}\n"
+  ssh -o StrictHostKeyChecking=no -l ${user_flag} ${HOSTNAME} "bash -s" -- < "${script_name}" "${args_string}" ${quiet_cmd}
 done
