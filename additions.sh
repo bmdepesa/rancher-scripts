@@ -152,7 +152,7 @@ function rancher_create_ha {
 
   echo "Setting kubeconfig..."
   kc="kube_config_$yname"
-  export KUBECONFIG=$kc
+  skc $ymlPath$kc
 
   echo "Installing Rancher via Helm"
   kubectl -n kube-system create serviceaccount tiller
