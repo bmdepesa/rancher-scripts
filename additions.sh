@@ -36,3 +36,17 @@ function tugls {
 function rll {
   kubectl logs -n cattle-system $(rgl) $1
 }
+
+function agi_j {
+  filter="$1"
+  adopts="$2"
+  aws ec2 describe-instances \
+  $adopts \
+  --filters "Name=tag:Name,Values=$filter" \
+  --output json | \
+  jq -r '.Reservations[].Instances[] | select(.State.Name=="running") | { name: .Tags[] | select(.Key=="Name") | .Value, type: .InstanceType, id: .InstanceId, public: .PublicIpAddress, private: .PrivateIpAddress}'
+}
+
+function agi {
+  agi_j $1 $2 | jq -r '"\(.name) \(.id) \(.type) \(.public) \(.private)"'
+}
